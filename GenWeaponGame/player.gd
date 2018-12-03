@@ -7,17 +7,43 @@ extends KinematicBody2D
 const MOTION_SPEED = 160 # Pixels/second
 const ROTATION_SPEED = 5 # Pixels/second
 
+# Size of gun pool
+export var pool_size = 4
+
+
+# Is shooting?
 var shooting = false
+
+# Pool for holding guns to select from
+var gun_pool = []
+
+# Gun currently equipped
+var equip_gun = 0
 
 
 func _ready():
-	pass
+	$gun.init()
+	gun_pool.append($gun)
+	
+	for i in range(pool_size - 1):
+		var new_gun = $gun.duplicate()
+		add_child(new_gun)
+		new_gun.init()
+		new_gun.rand_chromos()
+		gun_pool.append(new_gun)
+
 
 func _input(event):
 	if(event.is_action_pressed("player1_shoot")):
 		shooting = true
 	elif(event.is_action_released("player1_shoot")):
 		shooting = false
+	elif(event.is_action_pressed("player1_cycle_weapon")):
+		if (equip_gun >= pool_size - 1):
+			equip_gun = 0
+		else:
+			equip_gun += 1
+		
 
 
 func _physics_process(delta):
@@ -42,5 +68,5 @@ func _process(delta):
 		fire_once()
 
 func fire_once():
-	$gun.shoot()
+	gun_pool[equip_gun].shoot()
 	shooting = false

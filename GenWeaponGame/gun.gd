@@ -1,24 +1,37 @@
 extends Node2D 
 
-# class member variables go here, for example:
-# var a = 2
-# var b = "textvar"
+
+# Chromos Max Values
+export var max_speed = 1000
+export var max_size = 100
+export var max_angle = 50
+
+
+# Holds chromos info
+var data = {}
+
+# Number of times fired
+var num_fired = 0
 
 # Bullet scene
 export (PackedScene) var bullet
 
 # Bullet container (main scene)
-onready var bullet_container = get_parent().get_parent()
+var bullet_container
 
 # Bullet spawn
-export (NodePath) var bullet_spawn_path
-onready var bullet_spawn = get_node(bullet_spawn_path)
+var bullet_spawn
 
 
 func _ready():
 	# Called when the node is added to the scene for the first time.
 	# Initialization here
-	pass
+	rand_chromos()
+
+func init():
+	bullet_container = get_parent().get_parent()
+	bullet_spawn = get_node("bullet_spawn")
+
 
 
 #func _process(delta):
@@ -27,8 +40,17 @@ func _ready():
 #	pass
 
 
+# Randomize the parameters
+func rand_chromos():
+	randomize()
+	data['speed'] = randi() % max_speed + 1
+	data['size'] = randi() % max_size + 1
+	data['angle'] = randi() % max_angle + 1
+
 func shoot():
+	num_fired += 1
 	var b = bullet.instance()
+	b.init(data)
 	b.set_global_position(bullet_spawn.get_global_position())
 	b.shoot(get_global_position())
 	bullet_container.add_child(b)

@@ -4,11 +4,13 @@
 [ext_resource path="res://bullet.tscn" type="PackedScene" id=2]
 [ext_resource path="res://bullet.png" type="Texture" id=3]
 
-[node name="gun" type="Node2D"]
+[node name="gun" type="Node2D" index="0"]
 
 script = ExtResource( 1 )
+max_speed = 1000
+max_size = 100
+max_angle = 50
 bullet = ExtResource( 2 )
-bullet_spawn_path = NodePath("bullet_spawn")
 
 [node name="Sprite" type="Sprite" parent="." index="0"]
 
