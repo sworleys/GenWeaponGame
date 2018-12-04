@@ -7,6 +7,9 @@ extends KinematicBody2D
 const MOTION_SPEED = 160 # Pixels/second
 const ROTATION_SPEED = 5 # Pixels/second
 
+# Player num
+export var player_num = 1
+
 # Size of gun pool
 export var pool_size = 4
 
@@ -20,6 +23,9 @@ var gun_pool = []
 # Gun currently equipped
 var equip_gun = 0
 
+# Text pool display
+var pool
+
 
 func _ready():
 	$gun.init()
@@ -31,18 +37,26 @@ func _ready():
 		new_gun.init()
 		new_gun.rand_chromos()
 		gun_pool.append(new_gun)
+	
+	pool = get_parent().get_node("player" + str(player_num) + "_pool")
+	pool.add_guns(gun_pool)
+	pool.select(0)
+	
+
 
 
 func _input(event):
-	if(event.is_action_pressed("player1_shoot")):
+	if(event.is_action_pressed("player" + str(player_num) + "_shoot")):
 		shooting = true
-	elif(event.is_action_released("player1_shoot")):
+	elif(event.is_action_released("player" + str(player_num) + "_shoot")):
 		shooting = false
-	elif(event.is_action_pressed("player1_cycle_weapon")):
+	elif(event.is_action_pressed("player" + str(player_num) + "_cycle_weapon")):
 		if (equip_gun >= pool_size - 1):
 			equip_gun = 0
+			
 		else:
 			equip_gun += 1
+		pool.select(equip_gun)
 		
 
 
@@ -50,14 +64,24 @@ func _physics_process(delta):
 	var motion = Vector2()
 	var direction = ($gun.bullet_spawn.get_global_position()- get_global_position()).normalized()
 	
-	if Input.is_action_pressed("move_up"):
-		motion += direction
-	if Input.is_action_pressed("move_bottom"):
-		motion -= direction
-	if Input.is_action_pressed("move_left"):
-		rotate((-1) * ROTATION_SPEED * delta)
-	if Input.is_action_pressed("move_right"):
-		rotate(ROTATION_SPEED * delta)
+	if player_num == 1:
+		if Input.is_action_pressed("move_up"):
+			motion += direction
+		if Input.is_action_pressed("move_bottom"):
+			motion -= direction
+		if Input.is_action_pressed("move_left"):
+			rotate((-1) * ROTATION_SPEED * delta)
+		if Input.is_action_pressed("move_right"):
+			rotate(ROTATION_SPEED * delta)
+	elif player_num == 2:
+		if Input.is_key_pressed(KEY_W):
+			motion += direction
+		if Input.is_key_pressed(KEY_S):
+			motion -= direction
+		if Input.is_key_pressed(KEY_A):
+			rotate((-1) * ROTATION_SPEED * delta)
+		if Input.is_key_pressed(KEY_D):
+			rotate(ROTATION_SPEED * delta)
 	
 	motion = motion.normalized() * MOTION_SPEED
 

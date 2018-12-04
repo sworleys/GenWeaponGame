@@ -47,6 +47,13 @@ func rand_chromos():
 	data['size'] = randi() % max_size + 1
 	data['angle'] = randi() % max_angle + 1
 
+func to_string():
+	var pool_str = "num_fired:" + str(num_fired) + ", "
+	for key in data.keys():
+		pool_str += str(key) + ":" + str(data[key]) + ", "
+	return pool_str
+	
+
 func shoot():
 	num_fired += 1
 	var b = bullet.instance()
