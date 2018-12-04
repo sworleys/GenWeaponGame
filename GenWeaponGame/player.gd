@@ -4,7 +4,7 @@ extends KinematicBody2D
 # move_and_slide works.
 
 # Member variables
-const MOTION_SPEED = 160 # Pixels/second
+const MOTION_SPEED = 80 # Pixels/second
 const ROTATION_SPEED = 5 # Pixels/second
 
 # Player num
@@ -43,7 +43,7 @@ func _ready():
 	
 	pool = get_parent().get_node("player" + str(player_num) + "_pool")
 	pool.add_guns(gun_pool)
-	pool.select(0)
+	equip_gun(0)
 	# Reducing by 0 to set the health label
 	reduce_health(0)
 	
@@ -56,12 +56,24 @@ func _input(event):
 	elif(event.is_action_released("player" + str(player_num) + "_shoot")):
 		shooting = false
 	elif(event.is_action_pressed("player" + str(player_num) + "_cycle_weapon")):
+		var index
 		if (equip_gun >= pool_size - 1):
-			equip_gun = 0
+			index = 0
 		else:
-			equip_gun += 1
-		pool.select(equip_gun)
-		
+			index = equip_gun + 1
+		equip_gun(index)
+
+
+# Equips gun
+func equip_gun(index):
+		un_equip_gun()
+		equip_gun = index
+		gun_pool[equip_gun].equip()
+		pool.select(index)
+
+# Un-equips gun
+func un_equip_gun():
+	gun_pool[equip_gun].un_equip()
 
 
 func _physics_process(delta):
@@ -110,10 +122,10 @@ func get_cur_gun():
 	return gun_pool[equip_gun]
 
 func evolution():
+	un_equip_gun()
 	$genetic.evolve(gun_pool)
 	pool.add_guns(gun_pool)
-	equip_gun = 0
-	pool.select(equip_gun)
+	equip_gun(0)
 
 func reduce_health(damage):
 	health_points += damage

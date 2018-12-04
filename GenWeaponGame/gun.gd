@@ -6,12 +6,13 @@ extends Node2D
 
 # Holds max data
 export var max_data = {
-	speed = 1000,
-	size = 70,
+	speed = 160,
+	size = 65,
 	angle = 50,
 	burst = 5,
-	burst_angle = 25,
-	bounces = 3
+	burst_angle = 50,
+	bounces = 3,
+	reproduce = 2,
 }
 
 # Holds chromos info
@@ -29,6 +30,8 @@ var bullet_container
 # Bullet spawn
 var bullet_spawn
 
+# Is gun equipped
+var equipped = false
 
 func _ready():
 	# Called when the node is added to the scene for the first time.
@@ -38,8 +41,23 @@ func _ready():
 func init():
 	bullet_container = get_parent().get_parent()
 	bullet_spawn = get_node("bullet_spawn")
-	if abs(bullet_spawn.position.y) < data['size']*2:
-		bullet_spawn.position.y = -1 * (data['size'] + 1)
+	$chamber.init(data)
+	$chamber.set_global_position(bullet_spawn.get_global_position())
+	# Doesn't actually shoot, just sets direction
+	$chamber.shoot(get_global_position(), 0)
+	$chamber.hide()
+
+# Gun is equipped by player
+func equip():
+	equipped = true
+	$chamber.init(data)
+	$chamber/burst.set_text(str(data["burst"]))
+	$chamber.show()
+
+# Gun is un-equipped by player
+func un_equip():
+	equipped = false
+	$chamber.hide()
 
 # Randomize the parameters
 func rand_chromos():
@@ -64,7 +82,7 @@ func shoot():
 		shoot_bullet(0)
 	else:
 		for i in range(data["burst"]):
-			var rand_angle = (randi() % (2 * max_data["burst_angle"]) + 1) - max_data["burst_angle"]
+			var rand_angle = (randi() % (2 * data["burst_angle"]) + 1) - data["burst_angle"]
 			shoot_bullet(rand_angle)
 
 # Shoot a single bullet
@@ -72,10 +90,9 @@ func shoot_bullet(burst_angle):
 	var b = bullet.instance()
 	b.init(data)
 	b.set_global_position(bullet_spawn.get_global_position())
-	#b.set_rotation_degrees(burst_angle)
 	b.shoot(get_global_position(), burst_angle)
-	#b.direction.set_rotation_degrees(b.get_rotation_degrees() + burst_angle)
 	bullet_container.add_child(b)
+
 
 static func compare(a, b):
 	if a.num_fired > b.num_fired:

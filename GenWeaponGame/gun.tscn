@@ -4,16 +4,17 @@
 [ext_resource path="res://bullet.tscn" type="PackedScene" id=2]
 [ext_resource path="res://bullet.png" type="Texture" id=3]
 
-[node name="gun" type="Node2D" index="0"]
+[node name="gun" type="Node2D"]
 
 script = ExtResource( 1 )
 max_data = {
 "angle": 50,
 "bounces": 3,
 "burst": 5,
-"burst_angle": 25,
-"size": 70,
-"speed": 1000
+"burst_angle": 50,
+"reproduce": 2,
+"size": 65,
+"speed": 160
 }
 bullet = ExtResource( 2 )
 
@@ -23,7 +24,40 @@ texture = ExtResource( 3 )
 
 [node name="bullet_spawn" type="Position2D" parent="." index="1"]
 
-position = Vector2( 0, -1 )
+position = Vector2( 0.663422, -40.1418 )
 _sections_unfolded = [ "Transform" ]
+
+[node name="chamber" parent="." index="2" instance=ExtResource( 2 )]
+
+show_behind_parent = true
+collision_layer = 0
+collision_mask = 0
+_sections_unfolded = [ "Collision", "Material", "Pause", "Pickable", "Transform", "Visibility", "Z Index", "collision" ]
+chamber = true
+
+[node name="burst" type="Label" parent="chamber" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = -1.0
+margin_top = -20.0
+margin_right = 39.0
+margin_bottom = -6.0
+rect_rotation = 89.1846
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Rect", "custom_colors" ]
 
 

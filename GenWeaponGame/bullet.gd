@@ -1,27 +1,40 @@
 extends KinematicBody2D
 
+# Is the bullet just for display
+export var chamber = false
+
+# Time bullet lives on screen
+export var max_life = 6
+var life_time = max_life
+
 var direction = Vector2()
 
 # Paremeters from gun chromos
+var data
 var speed
 var size
 var angle
 var bounces
+var reproduce
+var burst_angle
+
+# Child if it reproduces
+var child
 
 # Drawing and collisisons
 var angle_from
 var angle_to
 
-# Time bullet lives on screen
-var life_time = 3
-
 func init(data):
+	data = data
 	speed = data['speed']
 	size = data['size']
 	angle = data['angle']
 	angle_from = 270 - angle
 	angle_to = 270 + angle
-	bounces = data["bounces"]
+	bounces = data['bounces']
+	reproduce = data['reproduce']
+	burst_angle = data['burst_angle']
 	
 	# Make bullet shape based on parameters
 	# Chord formula
@@ -31,16 +44,20 @@ func init(data):
 	get_node("CollisionShape2D").set_shape(shape)
 
 
-func shoot(player_position, burst_angle):
+func shoot(player_position, angle):
 	direction = (get_global_position() - player_position).normalized()
-	direction = direction.rotated(burst_angle * PI / 180)
+	direction = direction.rotated(angle * PI / 180)
 	rotation = direction.angle()
 
 
 func _physics_process(delta):
+	if chamber:
+		return
 	life_time -= delta
 	if life_time <= 0:
 		queue_free()
+	elif reproduce == 2 and life_time <= (max_life / 2):
+			reproduce()
 
 	var collision_info = move_and_collide(direction * speed * delta)
 	if collision_info:
@@ -61,6 +78,17 @@ func _physics_process(delta):
 			else:
 				queue_free()
 
+func reproduce():
+	pass
+#	var b = gun.new_bullet()
+#	b.init(data, null)
+#	b.reproduce = 1
+#	b.size = int(b.size / 2)
+#	b.speed = int(b.speed * 1.5)
+#	b.set_global_position(get_global_position())
+#	direction = direction.rotated(angle * PI / 180)
+#	rotation = direction.angle()
+#	get_parent().add_child(b)
 
 # http://docs.godotengine.org/en/3.0/tutorials/2d/custom_drawing_in_2d.html
 func draw_circle_arc(center, radius, angle_from, angle_to, color):
