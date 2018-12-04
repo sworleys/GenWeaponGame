@@ -2,10 +2,14 @@ extends Node2D
 
 
 # Chromos Max Values
-export var max_speed = 1000
-export var max_size = 100
-export var max_angle = 50
 
+
+# Holds max data
+export var max_data = {
+	speed = 1000,
+	size = 100,
+	angle = 50
+}
 
 # Holds chromos info
 var data = {}
@@ -43,9 +47,11 @@ func init():
 # Randomize the parameters
 func rand_chromos():
 	randomize()
-	data['speed'] = randi() % max_speed + 1
-	data['size'] = randi() % max_size + 1
-	data['angle'] = randi() % max_angle + 1
+	for param in max_data.keys():
+		rand_chrom(param)
+
+func rand_chrom(param):
+		data[param] = randi() % max_data[param] + 1
 
 func to_string():
 	var pool_str = "num_fired:" + str(num_fired) + ", "

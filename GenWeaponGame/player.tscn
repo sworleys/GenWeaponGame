@@ -10,7 +10,7 @@
 custom_solver_bias = 0.0
 extents = Vector2( 8, 8 )
 
-[node name="player" type="KinematicBody2D"]
+[node name="player" type="KinematicBody2D" index="0"]
 
 input_pickable = false
 collision_layer = 1
@@ -35,6 +35,11 @@ shape = SubResource( 1 )
 
 position = Vector2( 0, -9.49186 )
 _sections_unfolded = [ "Transform" ]
+max_data = {
+"angle": 50,
+"size": 100,
+"speed": 1000
+}
 
 [node name="genetic" type="Node" parent="." index="3"]
 

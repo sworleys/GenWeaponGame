@@ -7,9 +7,11 @@
 [node name="gun" type="Node2D"]
 
 script = ExtResource( 1 )
-max_speed = 1000
-max_size = 100
-max_angle = 50
+max_data = {
+"angle": 50,
+"size": 100,
+"speed": 1000
+}
 bullet = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="." index="0"]

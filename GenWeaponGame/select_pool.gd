@@ -7,6 +7,7 @@ func _ready():
 	pass
 
 func add_guns(pool):
+	clear()
 	for gun in pool:
 		add_item(gun.to_string())
 

@@ -64,6 +64,10 @@ func _physics_process(delta):
 	var motion = Vector2()
 	var direction = ($gun.bullet_spawn.get_global_position()- get_global_position()).normalized()
 	
+	if Input.is_key_pressed(KEY_Y):
+		$genetic.evolve(gun_pool)
+		pool.add_guns(gun_pool)
+	
 	if player_num == 1:
 		if Input.is_action_pressed("move_up"):
 			motion += direction
@@ -93,4 +97,5 @@ func _process(delta):
 
 func fire_once():
 	gun_pool[equip_gun].shoot()
+	pool.set_item_text(equip_gun, gun_pool[equip_gun].to_string())
 	shooting = false
