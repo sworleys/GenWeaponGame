@@ -8,7 +8,7 @@ func _ready():
 
 func evolve(pool):
 	randomize()
-	pool.sort_custom(self, "compare")
+	pool.sort_custom(pool[0], "compare")
 	
 	for i in range(0, pool.size()):
 		var gun = pool[i]
@@ -23,8 +23,3 @@ func evolve(pool):
 			else:
 				gun.data[param] = random_parent.data[param]
 
-
-static func compare(a, b):
-	if a.num_fired > b.num_fired:
-		return true
-	return false

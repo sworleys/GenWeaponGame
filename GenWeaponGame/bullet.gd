@@ -1,32 +1,66 @@
 extends KinematicBody2D
 
 var direction = Vector2()
-var shape
 
 # Paremeters from gun chromos
 var speed
 var size
 var angle
+var bounces
 
+# Drawing and collisisons
+var angle_from
+var angle_to
+
+# Time bullet lives on screen
+var life_time = 3
 
 func init(data):
 	speed = data['speed']
 	size = data['size']
 	angle = data['angle']
+	angle_from = 270 - angle
+	angle_to = 270 + angle
+	bounces = data["bounces"]
 	
 	# Make bullet shape based on parameters
-	shape = CircleShape2D.new()
-	shape.set_radius(size)
-	self.get_node("CollisionShape2D").set_shape(shape)
+	# Chord formula
+	var chord = 2 * size * sin(((angle_to - angle_from) * PI / 180) / 2)
+	var shape = RectangleShape2D.new()
+	shape.set_extents(Vector2(chord/2, size/2))
+	get_node("CollisionShape2D").set_shape(shape)
 
 
-func shoot(player_position):
+func shoot(player_position, burst_angle):
 	direction = (get_global_position() - player_position).normalized()
+	direction = direction.rotated(burst_angle * PI / 180)
 	rotation = direction.angle()
 
 
 func _physics_process(delta):
-	position += direction * speed * delta
+	life_time -= delta
+	if life_time <= 0:
+		queue_free()
+
+	var collision_info = move_and_collide(direction * speed * delta)
+	if collision_info:
+		var collider_type = collision_info.collider.get_type()
+		var collider = collision_info.collider
+		if collider_type == "player":
+			# Gotta get max from a gun, can be any gun since is determine before run time
+			collider.reduce_health(collider.get_cur_gun().max_data['speed'] - speed)
+			queue_free()
+		elif collider_type == "bullet":
+			position += direction * speed * delta
+		else:
+			if bounces >= 1:
+				bounces -= 1
+				direction = direction.bounce(collision_info.normal)
+				rotation = direction.angle()
+				speed = speed / 2
+			else:
+				queue_free()
+
 
 # http://docs.godotengine.org/en/3.0/tutorials/2d/custom_drawing_in_2d.html
 func draw_circle_arc(center, radius, angle_from, angle_to, color):
@@ -41,12 +75,11 @@ func draw_circle_arc(center, radius, angle_from, angle_to, color):
 		draw_polygon(points_arc, colors)
 
 func _draw():
-	var center = Vector2(0, 0)
+	var center = Vector2(size/2, 0)
 	var radius = size
-	var angle_from = 270 - angle
-	var angle_to = 270 + angle
 	var color = Color(1.0, 1.0, 1.0)
 	draw_circle_arc(center, radius, angle_from, angle_to, color)
 
-
+func get_type():
+	return "bullet"
 

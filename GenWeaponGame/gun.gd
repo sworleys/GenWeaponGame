@@ -7,8 +7,11 @@ extends Node2D
 # Holds max data
 export var max_data = {
 	speed = 1000,
-	size = 100,
-	angle = 50
+	size = 70,
+	angle = 50,
+	burst = 5,
+	burst_angle = 25,
+	bounces = 3
 }
 
 # Holds chromos info
@@ -35,14 +38,8 @@ func _ready():
 func init():
 	bullet_container = get_parent().get_parent()
 	bullet_spawn = get_node("bullet_spawn")
-
-
-
-#func _process(delta):
-#	# Called every frame. Delta is time since last frame.
-#	# Update game logic here.
-#	pass
-
+	if abs(bullet_spawn.position.y) < data['size']*2:
+		bullet_spawn.position.y = -1 * (data['size'] + 1)
 
 # Randomize the parameters
 func rand_chromos():
@@ -60,10 +57,27 @@ func to_string():
 	return pool_str
 	
 
+# Shoot all bullets in chamber
 func shoot():
 	num_fired += 1
+	if data["burst"] == 1:
+		shoot_bullet(0)
+	else:
+		for i in range(data["burst"]):
+			var rand_angle = (randi() % (2 * max_data["burst_angle"]) + 1) - max_data["burst_angle"]
+			shoot_bullet(rand_angle)
+
+# Shoot a single bullet
+func shoot_bullet(burst_angle):
 	var b = bullet.instance()
 	b.init(data)
 	b.set_global_position(bullet_spawn.get_global_position())
-	b.shoot(get_global_position())
+	#b.set_rotation_degrees(burst_angle)
+	b.shoot(get_global_position(), burst_angle)
+	#b.direction.set_rotation_degrees(b.get_rotation_degrees() + burst_angle)
 	bullet_container.add_child(b)
+
+static func compare(a, b):
+	if a.num_fired > b.num_fired:
+		return true
+	return false

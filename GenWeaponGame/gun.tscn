@@ -4,12 +4,15 @@
 [ext_resource path="res://bullet.tscn" type="PackedScene" id=2]
 [ext_resource path="res://bullet.png" type="Texture" id=3]
 
-[node name="gun" type="Node2D"]
+[node name="gun" type="Node2D" index="0"]
 
 script = ExtResource( 1 )
 max_data = {
 "angle": 50,
-"size": 100,
+"bounces": 3,
+"burst": 5,
+"burst_angle": 25,
+"size": 70,
 "speed": 1000
 }
 bullet = ExtResource( 2 )
@@ -20,6 +23,7 @@ texture = ExtResource( 3 )
 
 [node name="bullet_spawn" type="Position2D" parent="." index="1"]
 
-position = Vector2( 0.214638, -16.9565 )
+position = Vector2( 0, -1 )
+_sections_unfolded = [ "Transform" ]
 
 

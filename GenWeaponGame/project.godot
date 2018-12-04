@@ -14,6 +14,11 @@ config/name="GenWeaponGame"
 run/main_scene="res://colworld.tscn"
 config/icon="res://icon.png"
 
+[display]
+
+window/size/width=1920
+window/size/height=1080
+
 [gdnative]
 
 singletons=[  ]

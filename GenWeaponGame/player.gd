@@ -13,6 +13,9 @@ export var player_num = 1
 # Size of gun pool
 export var pool_size = 4
 
+# Health
+export var max_health = 1000
+var health_points = max_health
 
 # Is shooting?
 var shooting = false
@@ -41,6 +44,8 @@ func _ready():
 	pool = get_parent().get_node("player" + str(player_num) + "_pool")
 	pool.add_guns(gun_pool)
 	pool.select(0)
+	# Reducing by 0 to set the health label
+	reduce_health(0)
 	
 
 
@@ -53,7 +58,6 @@ func _input(event):
 	elif(event.is_action_pressed("player" + str(player_num) + "_cycle_weapon")):
 		if (equip_gun >= pool_size - 1):
 			equip_gun = 0
-			
 		else:
 			equip_gun += 1
 		pool.select(equip_gun)
@@ -65,8 +69,7 @@ func _physics_process(delta):
 	var direction = ($gun.bullet_spawn.get_global_position()- get_global_position()).normalized()
 	
 	if Input.is_key_pressed(KEY_Y):
-		$genetic.evolve(gun_pool)
-		pool.add_guns(gun_pool)
+		evolution()
 	
 	if player_num == 1:
 		if Input.is_action_pressed("move_up"):
@@ -88,7 +91,6 @@ func _physics_process(delta):
 			rotate(ROTATION_SPEED * delta)
 	
 	motion = motion.normalized() * MOTION_SPEED
-
 	move_and_slide(motion)
 
 func _process(delta):
@@ -99,3 +101,21 @@ func fire_once():
 	gun_pool[equip_gun].shoot()
 	pool.set_item_text(equip_gun, gun_pool[equip_gun].to_string())
 	shooting = false
+
+func get_type():
+	return "player"
+
+# Returns the gun object currently equipped
+func get_cur_gun():
+	return gun_pool[equip_gun]
+
+func evolution():
+	$genetic.evolve(gun_pool)
+	pool.add_guns(gun_pool)
+	equip_gun = 0
+	pool.select(equip_gun)
+
+func reduce_health(damage):
+	health_points += damage
+	$sprite/health.set_text(str(health_points))
+
