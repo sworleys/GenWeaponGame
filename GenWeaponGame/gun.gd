@@ -5,8 +5,8 @@ extends Node2D
 
 
 # Holds max data
-export var max_data = {
-	speed = 160,
+var max_data = {
+	speed = 300,
 	size = 60,
 	angle = 50,
 	burst = 5,
@@ -86,7 +86,17 @@ func to_string():
 		if not (key == "color"):
 			pool_str += str(key) + ":" + str(data[key]) + ", "
 	return pool_str
-	
+
+func to_csv():
+	var gun_str = ""
+	var i = 0
+	for key in data.keys():
+		if not (key == "color"):
+			if i != 0:
+				gun_str += ","
+			gun_str += str(data[key])
+		i += 1
+	return gun_str
 
 # Shoot all bullets in chamber
 func shoot():

@@ -4,7 +4,7 @@ extends KinematicBody2D
 # move_and_slide works.
 
 # Member variables
-const MOTION_SPEED = 80 # Pixels/second
+const MOTION_SPEED = 100 # Pixels/second
 const ROTATION_SPEED = 5 # Pixels/second
 
 # Player num
@@ -53,7 +53,6 @@ func _ready():
 	equip_gun(0)
 	# Reducing by 0 to set the power label
 	reduce_power(0)
-	
 
 
 
@@ -91,6 +90,7 @@ func _physics_process(delta):
 	
 	if Input.is_key_pressed(KEY_Y):
 		evolution()
+
 	
 	if player_num == 1:
 		if Input.is_action_pressed("move_up"):

@@ -8,16 +8,6 @@
 
 script = ExtResource( 1 )
 _sections_unfolded = [ "Material", "Visibility" ]
-max_data = {
-"angle": 50,
-"bounces": 3,
-"burst": 5,
-"burst_angle": 50,
-"color": 255,
-"reproduce": 2,
-"size": 60,
-"speed": 160
-}
 bullet = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="." index="0"]
