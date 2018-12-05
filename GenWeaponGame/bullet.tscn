@@ -7,7 +7,7 @@
 custom_solver_bias = 0.0
 extents = Vector2( 10, 10 )
 
-[node name="Bullet" type="KinematicBody2D" index="0"]
+[node name="Bullet" type="KinematicBody2D"]
 
 input_pickable = false
 collision_layer = 2
@@ -21,10 +21,10 @@ max_life = 6
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." index="0"]
 
 position = Vector2( 0.0300779, 1.20013 )
-rotation = -3.13958
+rotation = -1.5708
 scale = Vector2( 1.06107, 1.08576 )
 shape = SubResource( 1 )
 one_way_collision = true
-_sections_unfolded = [ "Visibility" ]
+_sections_unfolded = [ "Transform", "Visibility" ]
 
 

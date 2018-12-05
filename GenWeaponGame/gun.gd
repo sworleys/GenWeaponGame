@@ -7,12 +7,13 @@ extends Node2D
 # Holds max data
 export var max_data = {
 	speed = 160,
-	size = 65,
+	size = 60,
 	angle = 50,
 	burst = 5,
 	burst_angle = 50,
 	bounces = 3,
 	reproduce = 2,
+	color = 255
 }
 
 # Holds chromos info
@@ -41,7 +42,7 @@ func _ready():
 func init():
 	bullet_container = get_parent().get_parent()
 	bullet_spawn = get_node("bullet_spawn")
-	$chamber.init(data)
+	$chamber.init(data, get_parent().player_num)
 	$chamber.set_global_position(bullet_spawn.get_global_position())
 	# Doesn't actually shoot, just sets direction
 	$chamber.shoot(get_global_position(), 0)
@@ -50,7 +51,7 @@ func init():
 # Gun is equipped by player
 func equip():
 	equipped = true
-	$chamber.init(data)
+	$chamber.init(data, get_parent().player_num)
 	$chamber/burst.set_text(str(data["burst"]))
 	$chamber.show()
 
@@ -61,17 +62,29 @@ func un_equip():
 
 # Randomize the parameters
 func rand_chromos():
-	randomize()
 	for param in max_data.keys():
 		rand_chrom(param)
 
 func rand_chrom(param):
-		data[param] = randi() % max_data[param] + 1
+		if param == "color":
+			data[param] = Color(
+					get_random(param) / float(max_data[param]),
+					get_random(param) / float(max_data[param]), 
+					get_random(param) / float(max_data[param])
+					)
+		else:
+			data[param] = get_random(param)
+
+# Get a random between 1 and the parameters max
+func get_random(param):
+	randomize()
+	return randi() % max_data[param] + 1
 
 func to_string():
 	var pool_str = "num_fired:" + str(num_fired) + ", "
 	for key in data.keys():
-		pool_str += str(key) + ":" + str(data[key]) + ", "
+		if not (key == "color"):
+			pool_str += str(key) + ":" + str(data[key]) + ", "
 	return pool_str
 	
 
@@ -88,7 +101,7 @@ func shoot():
 # Shoot a single bullet
 func shoot_bullet(burst_angle):
 	var b = bullet.instance()
-	b.init(data)
+	b.init(data.duplicate(), get_parent().player_num)
 	b.set_global_position(bullet_spawn.get_global_position())
 	b.shoot(get_global_position(), burst_angle)
 	bullet_container.add_child(b)

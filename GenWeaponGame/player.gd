@@ -13,6 +13,9 @@ export var player_num = 1
 # Size of gun pool
 export var pool_size = 4
 
+# Player color
+export var color = Color(1, 0, 0)
+
 # Health
 export var max_health = 1000
 var health_points = max_health
@@ -129,5 +132,5 @@ func evolution():
 
 func reduce_health(damage):
 	health_points += damage
-	$sprite/health.set_text(str(health_points))
+	$health.set_text(str(health_points))
 
