@@ -17,8 +17,12 @@ export var pool_size = 4
 export var color = Color(1, 0, 0)
 
 # Health
-export var max_health = 1000
+export var max_health = 5000
 var health_points = max_health
+
+# Power
+export var max_power = 5000
+var power_points = max_power/2
 
 # Is shooting?
 var shooting = false
@@ -47,8 +51,8 @@ func _ready():
 	pool = get_parent().get_node("player" + str(player_num) + "_pool")
 	pool.add_guns(gun_pool)
 	equip_gun(0)
-	# Reducing by 0 to set the health label
-	reduce_health(0)
+	# Reducing by 0 to set the power label
+	reduce_power(0)
 	
 
 
@@ -80,6 +84,8 @@ func un_equip_gun():
 
 
 func _physics_process(delta):
+	if (power_points < max_power):
+		add_power(1)
 	var motion = Vector2()
 	var direction = ($gun.bullet_spawn.get_global_position()- get_global_position()).normalized()
 	
@@ -113,9 +119,12 @@ func _process(delta):
 		fire_once()
 
 func fire_once():
-	gun_pool[equip_gun].shoot()
-	pool.set_item_text(equip_gun, gun_pool[equip_gun].to_string())
-	shooting = false
+	var consumption = (get_cur_gun().data['size'] + get_cur_gun().data['speed']) * get_cur_gun().data["burst"]
+	if not (power_points - consumption < 0):
+		reduce_power(consumption)
+		get_cur_gun().shoot()
+		pool.set_item_text(equip_gun, get_cur_gun().to_string())
+		shooting = false
 
 func get_type():
 	return "player"
@@ -130,7 +139,20 @@ func evolution():
 	pool.add_guns(gun_pool)
 	equip_gun(0)
 
-func reduce_health(damage):
-	health_points += damage
-	$health.set_text(str(health_points))
+#func reduce_health(damage):
+#	health_points -= damage
+#	if health_points <= 0:
+#		print("Player " + str(player_num) + " dies in a blaze of glory...")
+#		get_tree().quit()
+#	$health.set_text(str(health_points))
 
+func reduce_power(power):
+	power_points -= power
+	if power_points <= 0:
+		print("Player " + str(player_num) + " dies in a blaze of glory...")
+		get_tree().quit()
+	$power.set_text(str(power_points))
+
+func add_power(power):
+	power_points += power
+	$power.set_text(str(power_points))

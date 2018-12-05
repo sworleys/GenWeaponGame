@@ -71,7 +71,7 @@ func _physics_process(delta):
 		if collider_type == "player":
 			if collider.player_num != player_num:
 				# Gotta get max from a gun, can be any gun since is determine before run time
-				collider.reduce_health(collider.get_cur_gun().max_data['speed'] - speed)
+				collider.reduce_power((collider.get_cur_gun().max_data['speed'] - speed + size) * 2)
 				queue_free()
 			else:
 				position += direction * speed * delta
