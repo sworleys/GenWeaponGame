@@ -87,9 +87,6 @@ func _physics_process(delta):
 		add_power(1)
 	var motion = Vector2()
 	var direction = ($gun.bullet_spawn.get_global_position()- get_global_position()).normalized()
-	
-	if Input.is_key_pressed(KEY_Y):
-		evolution()
 
 	
 	if player_num == 1:
@@ -101,6 +98,8 @@ func _physics_process(delta):
 			rotate((-1) * ROTATION_SPEED * delta)
 		if Input.is_action_pressed("move_right"):
 			rotate(ROTATION_SPEED * delta)
+		if Input.is_key_pressed(KEY_L):
+			evolution()
 	elif player_num == 2:
 		if Input.is_key_pressed(KEY_W):
 			motion += direction
@@ -110,6 +109,8 @@ func _physics_process(delta):
 			rotate((-1) * ROTATION_SPEED * delta)
 		if Input.is_key_pressed(KEY_D):
 			rotate(ROTATION_SPEED * delta)
+		if Input.is_key_pressed(KEY_E):
+			evolution()
 	
 	motion = motion.normalized() * MOTION_SPEED
 	move_and_slide(motion)
